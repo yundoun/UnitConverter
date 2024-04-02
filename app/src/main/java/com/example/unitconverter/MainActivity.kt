@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
@@ -62,6 +63,8 @@ fun UnitConverter() {
            // 값이 바뀌었을때 실행되어야 하는 것을 입력하면 됨
         })
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Row {
 
             Box {
@@ -79,6 +82,7 @@ fun UnitConverter() {
             }
 
         }
+        Spacer(modifier = Modifier.height(16.dp))
         Text("Result : ")
     }
 }
