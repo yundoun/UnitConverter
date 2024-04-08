@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -22,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.unitconverter.ui.theme.UnitConverterTheme
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,12 +53,46 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun UnitConverter() {
+    var inputValue by remember {
+        mutableStateOf("")
+    }
+    var outputValue by remember {
+        mutableStateOf("")
+    }
+    var inputUnit by remember {
+        mutableStateOf("Meters")
+    }
+    var outputUnit by remember {
+        mutableStateOf("Meters")
+    }
+    var iExpanded by remember {
+        mutableStateOf(false)
+    }
+    var oExpanded by remember {
+        mutableStateOf(false)
+    }
+    var conversionFactor = remember {
+        mutableStateOf(1.00)
+    }
+    var oConversionFactor = remember {
+        mutableStateOf(1.00)
+    }
+
+
+    fun converUnits() {
+        // ?: = elvis operator => 더블값이면 더블값을 그렇지 않으면 0.0을 사용해라
+        val inputValueDouble = inputValue.toDoubleOrNull() ?: 0.0
+        val result =
+            (inputValueDouble * conversionFactor.value * 100 / oConversionFactor.value).roundToInt() / 100.0
+        outputValue = result.toString()
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
+        ) {
 
 
         // UI 요소들이 하나씩 쌓인다.
@@ -67,70 +100,116 @@ fun UnitConverter() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = "", onValueChange = {
-            // 값이 바뀌었을때 실행되어야 하는 것을 입력하면 됨
-        })
+        OutlinedTextField(value = inputValue,
+            onValueChange = {
+                inputValue = it
+                converUnits()
+            }, label = { Text("Enter Value") })
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Row {
-
+            // Input Box
             Box {
-                Button(onClick = { /*TODO*/ }) {
-                    Text("Select")
+                // Input Button
+                Button(onClick = { iExpanded = true }) {
+                    Text(text = inputUnit)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = "Arrow Down")
                 }
-                DropdownMenu(expanded = false, onDismissRequest = { /*TODO*/ }) {
+                DropdownMenu(expanded = iExpanded, onDismissRequest = { iExpanded = false }) {
                     // 드롭다운 메뉴 아이템
                     DropdownMenuItem(
                         text = { Text("Centimeter") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            // 입력값이 센티미터로 바뀌어야 함 그리고 동시에 드롭다운 메뉴가 닫히게 해야함
+                            iExpanded = false
+                            inputUnit = "Centimeters"
+                            conversionFactor.value = 0.01
+                            converUnits()
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text("Meters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            iExpanded = false
+                            inputUnit = "Meters"
+                            conversionFactor.value = 1.0
+                            converUnits()
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text("Feet") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            iExpanded = false
+                            inputUnit = "Feet"
+                            conversionFactor.value = 0.3048
+                            converUnits()
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text("Milimeters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            iExpanded = false
+                            inputUnit = "Milimeters"
+                            conversionFactor.value = 0.001
+                            converUnits()
+                        }
                     )
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))
+
+            // Output Button
             Box {
-                Button(onClick = { /*TODO*/ }) {
-                    Text("Select")
+                Button(onClick = { oExpanded = true }) {
+                    Text(text = outputUnit)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = "Arrow Down")
                 }
 
-                DropdownMenu(expanded = false, onDismissRequest = { /*TODO*/ }) {
+                DropdownMenu(expanded = oExpanded, onDismissRequest = { oExpanded = false }) {
                     // 드롭다운 메뉴 아이템
                     DropdownMenuItem(
                         text = { Text("Centimeter") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            oExpanded = false
+                            outputUnit = "Centimeter"
+                            oConversionFactor.value = 0.01
+                            converUnits()
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text("Meters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            oExpanded = false
+                            outputUnit = "Meters"
+                            oConversionFactor.value = 1.0
+                            converUnits()
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text("Feet") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            oExpanded = false
+                            outputUnit = "Feet"
+                            oConversionFactor.value = 0.3048
+                            converUnits()
+                        }
                     )
                     DropdownMenuItem(
                         text = { Text("Milimeters") },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            oExpanded = false
+                            outputUnit = "Milimeters"
+                            oConversionFactor.value = 0.001
+                            converUnits()
+                        }
                     )
                 }
             }
 
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Result : ")
+        Text("Result : $outputValue $outputUnit")
     }
 }
 
