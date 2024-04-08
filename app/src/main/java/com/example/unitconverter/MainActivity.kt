@@ -28,9 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.unitconverter.ui.theme.UnitConverterTheme
+import java.time.format.TextStyle
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -78,6 +82,12 @@ fun UnitConverter() {
         mutableStateOf(1.00)
     }
 
+    val customTextStyle = androidx.compose.ui.text.TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontSize = 32.sp,
+        color = Color.Red
+    )
+
 
     fun converUnits() {
         // ?: = elvis operator => 더블값이면 더블값을 그렇지 않으면 0.0을 사용해라
@@ -96,7 +106,7 @@ fun UnitConverter() {
 
 
         // UI 요소들이 하나씩 쌓인다.
-        Text(text = "Unit Converter")
+        Text(text = "Unit Converter", style = customTextStyle)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -209,7 +219,10 @@ fun UnitConverter() {
 
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Result : $outputValue $outputUnit")
+
+        Text("Result : $outputValue $outputUnit",
+                style = MaterialTheme.typography.headlineMedium
+            )
     }
 }
 
